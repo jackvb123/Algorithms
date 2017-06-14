@@ -1,0 +1,79 @@
+
+
+count =0
+def partition1(A,l,r):
+  global count
+  count+=r-l
+  p=A[l]
+  i=l+1
+  for j in range(l+1,r+1):
+    if(A[j]<p):
+      A[i],A[j] = A[j],A[i]
+      i+=1
+  A[l],A[i-1] = A[i-1],A[l]
+  #print(A[l:r+1])
+  return i-1
+  
+def partition2(A,l,r):
+  global count
+  count+=r-l
+  A[l],A[r] = A[r],A[l]
+  p=A[l]
+  i=l+1
+  for j in range(l+1,r+1):
+    if(A[j]<p):
+      A[i],A[j] = A[j],A[i]
+      i+=1
+  A[l],A[i-1] = A[i-1],A[l]
+  #print(A[l:r+1])
+  return i-1  
+
+def partition3(A,l,r):
+  global count
+  count+=r-l
+  a = A[l]
+  length = r-l+1
+  if(length%2==0):
+    b = A[l+(length//2)-1]
+    k = l+(length//2)-1
+  else : 
+    b = A[l+(length)//2]
+    k = l+(length)//2
+  c = A[r]
+  
+  if (a<b<c) or (a>b>c):
+    A[l],A[k] = A[k],A[l]
+  elif (b<c<a) or (b>c>a):
+    A[l],A[r] = A[r],A[l]
+   
+  p=A[l]
+  #print("asd:",a,b,c,p)
+  #print(A[l:r+1]) 
+  i=l+1
+  for j in range(l+1,r+1):
+    if(A[j]<p):
+      A[i],A[j] = A[j],A[i]
+      i+=1
+  A[l],A[i-1] = A[i-1],A[l]
+  #print(A)
+  return i-1   
+  
+def quicksort(A,l,r):
+  if l>=r: return 
+  p=partition3(A,l,r)
+  
+  quicksort(A,l,p-1)
+  quicksort(A,p+1,r)
+  
+  
+f = open("in.txt")
+A = f.readlines()
+
+for i in range(0,len(A)):
+  A[i]=int(A[i].strip('\n'))
+  
+
+
+print(A)
+quicksort(A,0,len(A)-1)
+print(A,count)
