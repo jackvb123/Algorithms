@@ -1,0 +1,103 @@
+import random
+class edge:
+  def __init__(self, src,dest):
+    self.src = src
+    self.dest =dest
+  
+  
+class graph:
+  def __init__(self, V,E):
+    self.V=V
+    self.E=E
+    self.edge = []
+    
+    
+class subset:
+  def __init__(self,parent,rank):
+    self.parent = parent
+    self.rank = rank
+    
+def find(subsets, i):
+ # print('i in find :',i)
+  if(subsets[i].parent != i):
+    subsets[i].parent = find(subsets,subsets[i].parent)
+    
+  return subsets[i].parent
+  
+def Union(subsets,x,y):
+  x_root = find(subsets,x)
+  y_root = find(subsets,y)
+  if(subsets[x_root].rank <subsets[y_root].rank):
+    subsets[x_root].parent = y_root
+  elif(subsets[x_root].rank > subsets[y_root].rank):
+    subsets[y_root].parent = x_root
+  else:
+    subsets[y_root].parent = x_root
+    subsets[x_root].rank+=1
+    
+def createGraph(V,E):
+  g = graph(V,E)
+  return g
+  
+def minCut(g):
+  V = g.V
+  E = g.E
+  edge = g.edge
+  subsets=[0]
+ # print('V is ',V)
+  for v in range(1,V+1):
+    subsets.append(subset(v,0))
+    
+  vertices = V
+  while(vertices > 2):
+    i = random.randint(0,E-1)
+   # print(i)
+    subset1 = find(subsets,edge[i].src)
+    subset2 = find(subsets,edge[i].dest)
+    if(subset1 == subset2):
+      continue
+    else:
+     # print('Contracting edge',edge[i].src,edge[i].dest)
+      vertices-=1
+      Union(subsets,subset1,subset2)
+      
+  cutedges = 0
+  for i in range(0,E):
+    subset1 = find(subsets, edge[i].src)
+    subset2 = find(subsets, edge[i].dest)
+    if(subset1 !=subset2):
+      cutedges+=1
+    
+  return cutedges
+
+
+def main():
+  V=200
+  E=0
+  g =createGraph(V,E)
+  f = open("in.txt")
+  A = f.readlines()
+  
+  for i in range(0,len(A)):
+    A[i]=(A[i].replace('\t',' '))
+    A[i]=(A[i].replace('\n',''))
+    A[i] = A[i].split(' ')
+    A[i].remove('')
+    for j in range(len(A[i])):
+      A[i][j] = int(A[i][j])
+    #print(A[i])  
+    for j in range(1,len(A[i])):
+      g.edge.append(edge(A[i][0],A[i][j]))
+     #print(A[i][0],A[i][j])
+      E+=1
+  g.E=E
+  
+  print('Edges: ',g.E)  
+  
+  print('final min: ',minCut(g))
+  return 0
+  
+main()  
+  
+    
+
